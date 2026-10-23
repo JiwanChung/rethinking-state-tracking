@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rethinking State Tracking in Recurrent Models Through Error Control Dynamics</title>
+  <meta name="description" content="Robust state tracking in recurrent models is limited by error control dynamics in addition to expressivity.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Rethinking State Tracking in Recurrent Models Through Error Control Dynamics">
+  <meta property="og:description" content="Robust state tracking in recurrent models is limited by error control dynamics in addition to expressivity.">
+  <meta property="og:url" content="https://jiwanchung.github.io/rethinking-state-tracking/">
+  <meta property="og:image" content="https://jiwanchung.github.io/rethinking-state-tracking/static/figures/fig3_perturbation_grid.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="data:,">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-file" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h8"/></symbol>
+  <symbol id="i-github" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></symbol>
+  <symbol id="i-ext" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M8 7h9v9"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24" fill="currentColor"><path d="M7 4l13 8-13 8z"/></symbol>
+  <symbol id="i-pause" viewBox="0 0 24 24" fill="currentColor"><path d="M6 4h4v16H6zM14 4h4v16h-4z"/></symbol>
+  <symbol id="i-step" viewBox="0 0 24 24" fill="currentColor"><path d="M4 4l11 8-11 8z"/><path d="M17 4h3v16h-3z"/></symbol>
+  <symbol id="i-restart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 2.6-6.4"/><path d="M3 4v5h5"/></symbol>
+  <symbol id="i-shuffle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="1"/><path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></symbol>
+</svg>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="hero">
+  <p class="venue">NeurIPS 2026</p>
+  <h1>Rethinking State Tracking in Recurrent Models Through Error Control Dynamics</h1>
+  <p class="authors"><a href="https://jiwanchung.github.io/">Jiwan Chung</a>, Heechan Choi, <a href="https://www.ciplab.kr/members/professor/">Seon Joo Kim</a></p>
+  <p class="affil">Yonsei University</p>
+  <div class="links">
+    <a class="link-btn" href="https://arxiv.org/abs/2605.07755"><svg><use href="#i-file"/></svg>arXiv<svg class="ext"><use href="#i-ext"/></svg></a>
+    <a class="link-btn" href="https://github.com/JiwanChung/rethinking-state-tracking"><svg><use href="#i-github"/></svg>Code<svg class="ext"><use href="#i-ext"/></svg></a>
+    <a class="link-btn" href="#citation">BibTeX</a>
+  </div>
+</header>
+
+<noscript><p class="noscript">The interactive figures on this page need JavaScript. Every figure is also in the <a href="https://arxiv.org/abs/2605.07755">paper</a>.</p></noscript>
+
+<main id="main">
+
+<figure class="wide teaser" id="fig1">
+  <div class="fig-scroll"><img src="static/figures/fig3_perturbation_grid.png" alt="Perturbation recovery after noise injection on S3 for six recurrent models" class="figure-img"></div>
+  <figcaption>
+    <strong>Perturbation recovery after noise injection on \(S_3\).</strong> Affine models show either global decay (Mamba, Mamba-3, and Negative Mamba) or expansion (Token-gated RNN), while state-dependent models (tanh RNN and State-gated RNN) show strong error contraction.
+  </figcaption>
+</figure>
+
+<div class="prose summary">
+  <p class="lead">
+    <em>Can state-space models track states?</em> Prior work shows that affine models such as state-space models and linear attention are expressive enough to represent many state-tracking tasks, yet in practice they lose track on long sequences.
+  </p>
+  <p class="lead">
+    We propose another lens: <strong>error control</strong>. A recurrent model updates its hidden state at every step, so small errors build up, and it must remove the ones that push it toward a wrong state. Affine models cannot: keeping every state in place forces them to leave such errors untouched, so they track correctly only until the accumulated error grows too large relative to the distance between states. Models whose update depends on the state itself can remove these errors.
+  </p>
+  <details class="abstract">
+    <summary>Abstract</summary>
+    <p>
+      The theory of state tracking in recurrent architectures has predominantly focused on expressive capacity: whether a fixed architecture can theoretically realize a set of symbolic transition rules. We argue that equally important is error control, the dynamics governing hidden-state drift along the directions that distinguish symbolic states. We prove that affine recurrent networks, a class of models encompassing State-Space Models and Linear Attention, cannot correct errors along state-separating subspaces once they preserve state representations. Consequently, practical affine trackers do not learn robust state tracking; rather, they learn finite horizon solutions governed by accumulated state-relevant error. We characterize the mechanics of this failure, showing that tracking remains readable only while the accumulating within-class spread remains small relative to the initial between-class separation. We demonstrate empirically on group state-tracking tasks that this breakdown is predictable: tracking collapses when the distinguishability ratio crosses the readability threshold of the trained decoder. Across trained models, the point of this crossing predicts the horizon at which downstream accuracy fails. These results establish that robust state tracking is determined not only by an architecture's theoretical expressivity but crucially by its error control.
+    </p>
+  </details>
+</div>
+
+<nav class="section-nav" aria-label="Sections">
+  <ul>
+    <li><a href="#problem">Problem</a></li>
+    <li><a href="#theorem">Theorem 1</a></li>
+    <li><a href="#corollary">Corollary 1</a></li>
+    <li><a href="#evidence">Evidence</a></li>
+    <li><a href="#citation">Citation</a></li>
+  </ul>
+</nav>
+
+<!-- ── Problem ── -->
+<section class="section" id="problem">
+  <div class="prose">
+    <h2>Expressive capacity does not predict state-tracking robustness</h2>
+    <p>
+      All models are trained with curriculum learning up to sequence length 60 on three group state-tracking tasks of increasing difficulty: parity \(C_2\), the cyclic group \(C_6\), and the symmetric group \(S_3\).
+    </p>
+  </div>
+
+  <figure class="wide figure-band" id="table-main">
+    <div class="table-scroll">
+      <table class="data table-main">
+        <thead>
+          <tr>
+            <th class="l" rowspan="2">Model</th>
+            <th class="l" rowspan="2">Dynamics</th>
+            <th class="group" colspan="2">\(C_2\)</th>
+            <th class="group" colspan="2">\(C_6\)</th>
+            <th class="group" colspan="2">\(S_3\)</th>
+          </tr>
+          <tr><th>L1</th><th>L2</th><th>L1</th><th>L2</th><th>L1</th><th>L2</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="l name">Mamba</td><td class="l c-affine">Affine</td><td class="fail">&#x2717;</td><td>60</td><td class="fail">&#x2717;</td><td>60</td><td class="fail">&#x2717;</td><td class="fail">&#x2717;</td></tr>
+          <tr><td class="l name">Mamba-3</td><td class="l c-affine">Affine</td><td>200</td><td>300</td><td>100</td><td>100</td><td class="fail">&#x2717;</td><td>60</td></tr>
+          <tr><td class="l name">AUSSM</td><td class="l c-affine">Affine</td><td class="max">1000</td><td class="fail">&#x2717;</td><td>200</td><td>100</td><td class="fail">&#x2717;</td><td class="fail">&#x2717;</td></tr>
+          <tr><td class="l name">Simple AUSSM</td><td class="l c-affine">Affine</td><td>300</td><td>400</td><td>100</td><td>100</td><td>60</td><td>100</td></tr>
+          <tr><td class="l name">Negative Mamba</td><td class="l c-affine">Affine</td><td class="max">1000</td><td class="max">1000</td><td>100</td><td>200</td><td>100</td><td>200</td></tr>
+          <tr><td class="l name">Linear RNN</td><td class="l c-affine">Affine</td><td class="fail">&#x2717;</td><td>100</td><td class="fail">&#x2717;</td><td>60</td><td class="fail">&#x2717;</td><td class="fail">&#x2717;</td></tr>
+          <tr><td class="l name">Token-gated RNN</td><td class="l c-affine">Affine</td><td class="max">1000</td><td>700</td><td>300</td><td>400</td><td>500</td><td class="max">1000</td></tr>
+          <tr class="group-start"><td class="l name">tanh RNN</td><td class="l c-state">State-dependent</td><td class="max">1000</td><td class="max">1000</td><td class="max">1000</td><td class="max">1000</td><td class="max">1000</td><td class="max">1000</td></tr>
+          <tr><td class="l name">State-gated RNN</td><td class="l c-state">State-dependent</td><td class="max">1000</td><td class="max">1000</td><td class="max">1000</td><td class="max">1000</td><td class="max">1000</td><td class="max">1000</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <figcaption>
+      <strong>State tracking performance.</strong> Values are the max-passing length mp, the largest evaluation length at which test accuracy remains \(\geq 90\%\). &#x2717; denotes failure to extrapolate. L1 and L2 denote one and two layers.
+    </figcaption>
+  </figure>
+
+  <div class="prose">
+    <p>
+      The table reveals a clear dichotomy in state-tracking robustness: state-dependent models (tanh RNN and State-gated RNN) reliably track symbolic states up to the maximum tested length of 1000 tokens across all three tasks, whereas affine models are generally unstable. The results match <a href="#theorem">Theorem 1</a>: recurrent operators without state-dependent transitions lack robust error correction.
+    </p>
+  </div>
+</section>
+
+<!-- ── Theorem 1 ── -->
+<section class="section" id="theorem">
+  <div class="prose">
+    <h2>Exact affine tracking cannot correct state error</h2>
+    <p>
+      For long-horizon state tracking, exact realization on clean trajectories is not enough. A robust tracker must also correct hidden-state perturbations that move it toward an incorrect symbolic state.
+    </p>
+    <p>
+      Let \(G\) be a finite symbolic state space, with each \(g \in G\) carrying a hidden-state representation \(c_g\). For a sequence \(s = x_1 \cdots x_T\), let \(F_s := F_{x_T} \circ \cdots \circ F_{x_1}\) be the induced hidden-state map. We focus on <em>state-preserving</em> sequences, whose symbolic action is the identity. Any exact realization must therefore return every \(c_g\) to itself, \(F_s(c_g) = c_g\) for all \(g \in G\). The perturbations that matter most are those that move a hidden state toward competing representations \(c_{g'}\). These directions span the <em>symbolic subspace</em>
+      \[\mathcal U := \operatorname{span}\{c_g - c_{g'} : g, g' \in G\}.\]
+    </p>
+    <div class="statement">
+      <p><span class="label">Theorem 1</span> (Affine neutrality on the symbolic subspace). Let \(s\) be a state-preserving sequence with non-degenerate representations (\(c_g \neq c_{g'}\) for \(g \neq g'\)), and suppose the induced return map is affine, \(F_s(h) = A_s h + b_s\). If \(F_s(c_g) = c_g\) for all \(g \in G\), then \(A_s|_{\mathcal U} = I\).</p>
+    </div>
+    <p>
+      Once an affine return map fixes every symbolic state exactly, it has no freedom left to shrink the directions that separate those states: for any perturbation \(\delta \in \mathcal U\), \(F_s(c_g + \delta) - F_s(c_g) = \delta\). A state-dependent return map can fix each representation \(c_g\) without being neutral around it.
+    </p>
+  </div>
+
+  <figure class="wide widget" id="widget-theorem">
+    <p class="widget-instruction"><strong>Drag</strong> the point to insert a perturbation, then press play to apply \(F_s\).</p>
+    <div class="cmp-grid">
+      <div>
+        <div class="panel-head"><span class="swatch" style="background:var(--affine)"></span>Affine</div>
+        <div class="toggles model-pick" data-role="pick" data-panel="affine" aria-label="Affine model"></div>
+        <canvas data-panel="affine" data-aspect="1.25" aria-label="The chosen affine model's return map applied to its three representations and to a perturbed state"></canvas>
+        <p class="panel-note">Affine models cannot reduce errors along \(\mathcal U\). They can only contract the whole symbolic subspace to shrink the error, which works until \(c_0, c_1, c_2\) can no longer be told apart.</p>
+      </div>
+      <div>
+        <div class="panel-head"><span class="swatch" style="background:var(--state)"></span>State-dependent</div>
+        <div class="toggles model-pick" data-role="pick" data-panel="state" aria-label="State-dependent model"></div>
+        <canvas data-panel="state" data-aspect="1.25" aria-label="The chosen state-dependent model's return map applied to its three representations and to a perturbed state"></canvas>
+        <p class="panel-note">State-dependent transitions can reduce errors along \(\mathcal U\).</p>
+      </div>
+    </div>
+    <div class="transport">
+      <button class="icon-btn" data-role="play" aria-label="Play"><svg><use href="#i-play"/></svg></button>
+      <button class="icon-btn" data-role="step" aria-label="One pass" title="One pass"><svg><use href="#i-step"/></svg></button>
+      <button class="icon-btn" data-role="reset" aria-label="Back to the perturbation" title="Back to the perturbation"><svg><use href="#i-restart"/></svg></button>
+      <div class="scrub"><input type="range" min="0" max="10" step="1" value="0" data-role="scrub" aria-label="Passes of s"></div>
+      <div class="tread">\(F_s\) applied <span data-out="n"></span> times</div>
+    </div>
+    <div class="legend">
+      <span><i class="node"></i> representation \(c_g\)</span>
+      <span><i class="node is-current"></i> perturbed symbolic state</span>
+      <span><i class="dot" style="background:var(--affine)"></i><i class="dot" style="background:var(--state)"></i> perturbed state \(c_2 + \delta\)</span>
+      <span><i class="node is-start"></i> start, and path since</span>
+    </div>
+    <details class="impl-details">
+      <summary>Implementation details</summary>
+      <ul class="caption-list">
+        <li>One-layer models with 32 hidden units trained on \(C_3\), the running sum of the inputs mod 3.</li>
+        <li>\(s = 1\,1\,1\). \(c_g\) is the mean hidden state in symbolic state \(g\) over 200 random runs, after one pass of \(s\). Each panel is centered on \(c_0, c_1, c_2\).</li>
+      </ul>
+    </details>
+  </figure>
+</section>
+
+<!-- ── Corollary 1 ── -->
+<section class="section" id="corollary">
+  <div class="prose">
+    <h2>Accumulated error controls finite-horizon tracking</h2>
+    <p>
+      Theorem 1 does not imply immediate failure: affine return dynamics cannot generically remove errors along state-separating directions. The finite-horizon question is how long the learned symbolic states remain distinguishable under repeated reuse.
+    </p>
+    <p>
+      Let \(c_g(t) := \mathbb E[h_t \mid g_t = g]\) denote the centroid of hidden states with symbolic state \(g\), and let \(W_{\mathrm{out}}\) be the linear readout the classifier reads from. Define readout-space quantities
+      \[\begin{aligned} R(t) &:= \mathbb E\,\|W_{\mathrm{out}}(h_t - c_{g_t}(t))\|_2, \\ M(t) &:= \min_{g \neq g'} \|W_{\mathrm{out}}(c_g(t) - c_{g'}(t))\|_2, \\ q(t) &:= R(t)/M(t). \end{aligned}\]
+      \(R(t)\) is the within-class spread the decoder sees, \(M(t)\) is the between-class separation, and \(q(t)\) is the distinguishability ratio. With \(\tau = \tfrac12\) the nearest-centroid bound, symbolic states remain readable while \(q(t) &lt; \tau\).
+    </p>
+    <div class="statement">
+      <p><span class="label">Corollary 1</span> (Finite-horizon error accumulation). Let the trained return-cycle tracker be \(\tilde F_s = F_s + \varepsilon\), where \(F_s\) is the exact state-preserving affine return map considered in Theorem 1. Along a return cycle, define \(e_{\mathcal U}(t) := P_{\mathcal U}(h_t - c_{g_t})\) and \(\eta_t := P_{\mathcal U}\,\varepsilon(h_t)\). Then
+      \[e_{\mathcal U}(t) = e_{\mathcal U}(0) + \sum_{j=0}^{t-1} \eta_j.\]
+      Thus any coherent residual component accumulates linearly. If, over the relevant horizon, the projected residuals have a nonzero average drift \(\tfrac1t \sum_{j &lt; t} \eta_j \approx \bar\eta \neq 0\) and \(M(t) \approx M > 0\), then \(q(t)\) crosses a fixed threshold \(\tau\) on the scale
+      \[T_{\mathrm{cross}} \approx \frac{\tau M}{\|W_{\mathrm{out}}\bar\eta\|}.\]</p>
+    </div>
+    <p>
+      Empirically, affine models trace out two trajectories of \(q(t)\): <em>saturation</em>, where \(q(t)\) sits above \(\tau\) from the first few steps, and <em>climb</em>, where \(q(t)\) starts below \(\tau\) and grows until the crossing.
+    </p>
+  </div>
+
+  <figure class="wide widget" id="widget-corollary">
+    <p class="widget-instruction">Press play to run 200 random input sequences through each model.</p>
+    <div class="cmp-grid">
+      <div>
+        <div class="panel-head"><span class="swatch" style="background:var(--affine)"></span>Affine</div>
+        <div class="toggles model-pick" data-role="pick" data-panel="affine" aria-label="Affine model"></div>
+        <canvas data-role="cloud" data-panel="affine" data-aspect="1.25" aria-label="Centroids and spread of 200 runs of the chosen affine model"></canvas>
+        <p class="panel-note">Small errors are never removed, so they add up and the clusters spread until they meet: \(q(t)\) crosses \(\tfrac12\). Some models start above \(\tfrac12\) (saturation).</p>
+      </div>
+      <div>
+        <div class="panel-head"><span class="swatch" style="background:var(--state)"></span>State-dependent</div>
+        <div class="toggles model-pick" data-role="pick" data-panel="state" aria-label="State-dependent model"></div>
+        <canvas data-role="cloud" data-panel="state" data-aspect="1.25" aria-label="Centroids and spread of 200 runs of the chosen state-dependent model"></canvas>
+        <p class="panel-note">Each small error is removed, so the clusters stay tight and \(q(t)\) stays below \(\tfrac12\).</p>
+      </div>
+    </div>
+    <div class="panel-head is-stacked">Distinguishability ratio<span class="sub">\(q(t) = R(t)/M(t)\)</span></div>
+    <canvas class="is-plot" data-role="plot" data-aspect="4.4" data-aspect-narrow="1.7" aria-label="Distinguishability ratio over steps for both chosen models"></canvas>
+    <div class="transport">
+      <button class="icon-btn" data-role="play" aria-label="Play"><svg><use href="#i-play"/></svg></button>
+      <button class="icon-btn" data-role="reset" aria-label="Restart" title="Restart"><svg><use href="#i-restart"/></svg></button>
+      <div class="scrub"><input type="range" min="1" max="200" step="1" value="1" data-role="scrub" aria-label="Step"></div>
+      <div class="tread">step <span data-out="t"></span></div>
+    </div>
+    <div class="legend">
+      <span><i class="node"></i> centroid \(c_g(t)\)</span>
+      <span><i class="dot" style="background:#e8a097"></i><i class="dot" style="background:#c0392b"></i><i class="dot" style="background:#6e1e15"></i> one run, shaded by its true state</span>
+    </div>
+    <details class="impl-details">
+      <summary>Implementation details</summary>
+      <ul class="caption-list">
+        <li>One-layer models with 32 hidden units trained on \(C_3\), the running sum of the inputs mod 3: the same runs as in the Theorem 1 figure.</li>
+        <li>200 random input sequences of 200 steps each.</li>
+        <li>\(R(t)\), \(M(t)\) and \(q(t)\) are computed on the three output logits, as defined above. The runs are drawn in the plane where the logits differ, so spread that shifts all three logits together counts in \(q(t)\) but is not visible.</li>
+      </ul>
+    </details>
+  </figure>
+</section>
+
+<!-- ── Evidence ── -->
+<section class="section" id="evidence">
+  <div class="prose">
+    <h2>Error control behavior</h2>
+    <p>
+      We inject Gaussian noise into the hidden state at step 20 and compare the perturbed rollout with a clean rollout under the same inputs (<a href="#fig1">Figure 1</a>, top of the page). State-dependent models (tanh RNN, State-gated RNN) collapse the error by several orders of magnitude within tens of steps. The affine SSMs (Mamba, Mamba-3, Negative Mamba) instead contract errors through their global diagonal decay, which indicates global dissipation rather than conditional error correction. Token-gated RNN amplifies perturbations.
+    </p>
+  </div>
+
+  <div class="subsection" id="separation">
+    <div class="prose">
+      <h2>State separation over rollouts</h2>
+      <p>
+        We measure \(q(t)\) across \(N = 200\) rollouts on \(S_3\).
+      </p>
+    </div>
+    <figure class="wide figure-band" id="fig2">
+      <div class="chart-controls">
+        <label class="check"><input type="checkbox" data-role="latent" checked> latent space \(h\) (gray)</label>
+        <span class="hint">Hover or tap a panel to read the values at one step.</span>
+      </div>
+      <div class="chart" data-chart="separation" data-src="static/data/fig2_q_over_rollouts.json">
+        <canvas aria-label="Distinguishability ratio q(t) and spread R(t) over rollouts on S3 for six models"></canvas>
+        <div class="chart-tip" hidden></div>
+      </div>
+      <div class="legend">
+        <span><i class="line" style="background:#B2182B"></i> mp = 0 (&#x2717;)</span>
+        <span><i class="line" style="background:#D4A017"></i> 0 &lt; mp &lt; 1000</span>
+        <span><i class="line" style="background:#2D6FB0"></i> mp = 1000</span>
+        <span><i class="line" style="background:#9a9a9a"></i> latent space \(h\)</span>
+      </div>
+      <noscript><img src="static/figures/fig_codebook_collapse_grid_ro.png" alt="Distinguishability ratio over rollouts on S3 for six models" class="figure-img"></noscript>
+      <figcaption>
+        <strong>Distinguishability ratio \(q(t)\) over rollouts on \(S_3\).</strong> Top: \(q(t)\), with the dashed line at the nearest-centroid bound \(1/2\). Bottom: the spread \(R(t)\). Vertical dashes mark each model's mp.
+      </figcaption>
+    </figure>
+    <div class="prose">
+      <p>
+        State-dependent transitions (tanh RNN and State-gated RNN) maintain \(q(t) &lt; 0.5\) throughout rollout, whereas affine transitions eventually cross the nearest-centroid bound. Mamba and Mamba-3 saturate: their state clouds are immediately too wide relative to their separation. Negative Mamba and Token-gated RNN climb: they remain readable for a finite horizon and cross before their mp.
+      </p>
+    </div>
+  </div>
+
+  <div class="subsection" id="subspace">
+    <div class="prose">
+      <h2>Error decomposition along the symbolic subspace</h2>
+      <p>
+        We split each run's deviation from its state's centroid into its components in \(\mathcal U\) and in \(\mathcal U^\perp\).
+      </p>
+    </div>
+    <figure class="wide figure-band" id="fig3">
+      <div class="fig-scroll"><img src="static/figures/fig_subspace_decomp.png" alt="Subspace decomposition of within-class spread" class="figure-img"></div>
+      <figcaption>
+        <strong>Subspace decomposition of within-class spread.</strong> The spread along \(\mathcal U\) (color) and outside it (gray), relative to the separation between states, on a log scale. Vertical dashes mark each model's mp.
+      </figcaption>
+    </figure>
+    <div class="prose">
+      <p>
+        For Negative Mamba and Token-gated RNN, most spread initially lies outside the state-separating directions, but near each model's max-passing length it shifts into \(\mathcal U\), the subspace where affine return dynamics cannot contract perturbations. State-dependent models keep the spread along \(\mathcal U\) suppressed.
+      </p>
+    </div>
+  </div>
+
+  <div class="subsection" id="tcross">
+    <div class="prose">
+      <h2>Correlation between \(T_{\mathrm{cross}}\) and downstream performance</h2>
+      <p>
+        Corollary 1 predicts that the first nearest-centroid crossing, \(T_{\mathrm{cross}} = \min\{t : q_t \geq 0.5\}\), should track how long an affine tracker remains usable. Across 107 \(S_3\) models with \(\mathrm{mp} \geq 60\), \(T_{\mathrm{cross}}\) strongly correlates with downstream max-passing length on a log-log scale (\(r = +0.87\), \(p &lt; 10^{-30}\)).
+      </p>
+    </div>
+    <figure class="wide figure-band" id="fig4">
+      <div class="chart-narrow">
+        <div class="chart-controls">
+          <span class="toggles" data-role="families"></span>
+          <span class="hint">Hover or tap a curve to see its run.</span>
+        </div>
+        <div class="chart" data-chart="collapse" data-src="static/data/fig4_q_vs_t_over_mp.json">
+          <canvas aria-label="q_t against failure-normalized time t over mp for 107 trained runs"></canvas>
+          <div class="chart-tip" hidden></div>
+        </div>
+      </div>
+      <noscript><img src="static/figures/fig_cross_corr_collapsed_mpcoarse.png" alt="Distinguishability ratio against failure-normalized time" class="figure-img is-half"></noscript>
+      <figcaption>
+        <strong>Readability collapse coincides with downstream failure.</strong> On \(S_3\), \(q_t\) against failure-normalized time \(t/\mathrm{mp}\). Thin lines are individual runs and thick lines their family medians.
+      </figcaption>
+    </figure>
+  </div>
+
+</section>
+
+<!-- ── Citation ── -->
+<section class="section" id="citation">
+  <div class="wide">
+    <div class="cite-head">
+      <h2>Citation</h2>
+      <button class="copy-btn" data-role="copy-bibtex"><svg><use href="#i-copy"/></svg><span>Copy BibTeX</span></button>
+    </div>
+    <pre class="bibtex" id="bibtex-text">@inproceedings{chung2026rethinking,
+  title={Rethinking State Tracking in Recurrent Models Through Error Control Dynamics},
+  author={Chung, Jiwan and Choi, Heechan and Kim, Seon Joo},
+  booktitle={Advances in Neural Information Processing Systems},
+  year={2026}
+}</pre>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wide">
+    <span>Page layout adapted from the <a href="https://github.com/eliahuhorwitz/Academic-project-page-template">Academic Project Page Template</a>.</span>
+    <a href="#">Back to top</a>
+  </div>
+</footer>
+
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+<script defer src="page.js"></script>
+<script defer src="concept.js"></script>
+<script defer src="charts.js"></script>
+</body>
+</html>
