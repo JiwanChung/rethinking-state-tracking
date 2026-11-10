@@ -112,6 +112,10 @@
           <tr><td class="l name">Negative Mamba</td><td class="l c-affine">Affine</td><td class="max">1000</td><td class="max">1000</td><td>100</td><td>200</td><td>100</td><td>200</td></tr>
           <tr><td class="l name">Linear RNN</td><td class="l c-affine">Affine</td><td class="fail">&#x2717;</td><td>100</td><td class="fail">&#x2717;</td><td>60</td><td class="fail">&#x2717;</td><td class="fail">&#x2717;</td></tr>
           <tr><td class="l name">Token-gated RNN</td><td class="l c-affine">Affine</td><td class="max">1000</td><td>700</td><td>300</td><td>400</td><td>500</td><td class="max">1000</td></tr>
+          <tr class="group-start"><td class="l name">Gated DeltaNet</td><td class="l c-affine">Affine</td><td class="max">1000</td><td class="max">1000</td><td class="fail">&#x2717;</td><td>100</td><td class="fail">&#x2717;</td><td>200</td></tr>
+          <tr><td class="l name">KDA</td><td class="l c-affine">Affine</td><td class="max">1000</td><td class="max">1000</td><td class="fail">&#x2717;</td><td>100</td><td class="fail">&#x2717;</td><td>200</td></tr>
+          <tr><td class="l name">Gated DeltaNet-2</td><td class="l c-affine">Affine</td><td class="max">1000</td><td class="max">1000</td><td class="fail">&#x2717;</td><td>100</td><td class="fail">&#x2717;</td><td>200</td></tr>
+          <tr><td class="l name">Gated DeltaProduct</td><td class="l c-affine">Affine</td><td class="max">1000</td><td class="max">1000</td><td>400</td><td>200</td><td>400</td><td>200</td></tr>
           <tr class="group-start"><td class="l name">tanh RNN</td><td class="l c-state">State-dependent</td><td class="max">1000</td><td class="max">1000</td><td class="max">1000</td><td class="max">1000</td><td class="max">1000</td><td class="max">1000</td></tr>
           <tr><td class="l name">State-gated RNN</td><td class="l c-state">State-dependent</td><td class="max">1000</td><td class="max">1000</td><td class="max">1000</td><td class="max">1000</td><td class="max">1000</td><td class="max">1000</td></tr>
         </tbody>
@@ -125,6 +129,9 @@
   <div class="prose">
     <p>
       The table reveals a clear dichotomy in state-tracking robustness: state-dependent models (tanh RNN and State-gated RNN) reliably track symbolic states up to the maximum tested length of 1000 tokens across all three tasks, whereas affine models are generally unstable. The results match <a href="#theorem">Theorem 1</a>: recurrent operators without state-dependent transitions lack robust error correction.
+    </p>
+    <p>
+      The delta-rule models (Gated DeltaNet, KDA, Gated DeltaNet-2, and Gated DeltaProduct) are affine as well. <a href="#delta-rule">Below</a>, we repeat the error-control analyses for Gated DeltaProduct, the only delta-rule model whose curriculum converges on \(S_3\) with one layer.
     </p>
   </div>
 </section>
@@ -332,6 +339,29 @@
         <strong>Readability collapse coincides with downstream failure.</strong> On \(S_3\), \(q_t\) against failure-normalized time \(t/\mathrm{mp}\). Thin lines are individual runs and thick lines their family medians.
       </figcaption>
     </figure>
+  </div>
+
+  <div class="subsection" id="delta-rule">
+    <div class="prose">
+      <h2>Delta-rule models</h2>
+      <p>
+        The delta-rule models update a matrix-valued state whose transition depends only on the input, so they are affine in the state and <a href="#theorem">Theorem 1</a> applies to them. Of the four models, only Gated DeltaProduct passes the curriculum on \(S_3\) with a single layer, so we repeat the analyses of <a href="#fig1">perturbation recovery</a>, <a href="#separation">state separation</a>, and <a href="#subspace">error decomposition</a> for this model.
+      </p>
+    </div>
+    <figure class="wide figure-band" id="fig5">
+      <div class="fig-scroll"><img src="static/figures/fig_gdp_analysis.png" alt="Perturbation recovery, distinguishability ratio, and subspace decomposition for Gated DeltaProduct on S3" class="figure-img"></div>
+      <figcaption>
+        <strong>Error control of Gated DeltaProduct on \(S_3\).</strong> Vertical dashes mark its max-passing length of 400.
+      </figcaption>
+    </figure>
+    <div class="prose">
+      <p>
+        Like the other affine models, Gated DeltaProduct does not remove the injected error (a), and its \(q(t)\) climbs past the nearest-centroid bound before its max-passing length (b). The spread along \(\mathcal U\) is larger than the spread outside it from the start (c), so the growing error already lies in the directions that separate the states, where affine dynamics cannot contract it.
+      </p>
+      <p>
+        These results also suggest why it extrapolates further than the other affine models that pass \(S_3\). As an affine model, it cannot reduce errors along \(\mathcal U\) without also reducing the separation between states, but it settles at a better point on this trade-off: it starts extrapolation with a spread that is small relative to the separation, so the accumulated spread takes longer to reach the bound.
+      </p>
+    </div>
   </div>
 
 </section>
